@@ -1,0 +1,63 @@
+
+`timescale 1ns / 1ps
+module multiples_checker(
+    input [4:0] num,        // 5-bit input number
+    output reg isMultTwo,   // LED1 - Multiple of 2
+    output reg isMultThree, // LED2 - Multiple of 3
+    output reg isMultFour,  // LED3 - Multiple of 4
+    output reg isMultFive,  // LED4 - Multiple of 5
+    output reg isMult235    // LED5 - Multiple of 2, 3, and 5
+);
+
+always @(*) begin
+    // Initialize all outputs to 0
+    isMultTwo = 0;
+    isMultThree = 0;
+    isMultFour = 0;
+    isMultFive = 0;
+    isMult235 = 0;
+
+    if (num >= 2) begin
+        // Check for multiples of 2, 3, 4, 5
+        if (num % 2 == 0) isMultTwo = 1;
+        if (num % 3 == 0) isMultThree = 1;
+        if (num % 4 == 0) isMultFour = 1;
+        if (num % 5 == 0) isMultFive = 1;
+
+        // Turn on LED5 if the number is divisible by 2, 3, and 5
+        if (num % 2 == 0 && num % 3 == 0 && num % 5 == 0) isMult235 = 1;
+    end
+end
+
+endmodule
+
+
+//tb:
+`timescale 1ns / 1ps
+module multiples_checker_tb();
+
+    reg [4:0] num;            // 5-bit input to test all cases
+    wire isMultTwo;
+    wire isMultThree;
+    wire isMultFour;
+    wire isMultFive;
+    wire isMult235;
+
+    // Instantiate the module under test
+    multiples_checker checker(
+        .num(num), 
+        .isMultTwo(isMultTwo), 
+        .isMultThree(isMultThree), 
+        .isMultFour(isMultFour), 
+        .isMultFive(isMultFive),
+        .isMult235(isMult235)
+    );
+
+    initial begin
+        // Test all numbers from 0 to 31 (5-bit range)
+        for (num = 0; num < 32; num = num + 1) begin
+            #10; // Delay for 10 time units between tests
+        end
+        $stop; // End the simulation
+    end
+endmodule
